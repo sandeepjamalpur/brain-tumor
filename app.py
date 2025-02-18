@@ -19,13 +19,15 @@ st.set_page_config(
 
 def check_password():
     def password_entered():
-        if hmac.compare_digest(st.session_state["password"], DEFAULT_PASSWORD):
+        # Try to get password from secrets, fallback to default
+        correct_password = st.secrets.get("password", DEFAULT_PASSWORD)
+        if hmac.compare_digest(st.session_state["password"], correct_password):
             st.session_state["password_correct"] = True
         else:
             st.session_state["password_correct"] = False
 
     if "password_correct" not in st.session_state:
-        st.write("Please enter the password to access the application. (Default: admin123)")
+        st.write("Please enter the password to access the application.")
         st.text_input(
             "Password", type="password", on_change=password_entered, key="password"
         )
@@ -159,4 +161,4 @@ def show_about():
     """)
 
 if __name__ == "__main__":
-    main()
+    main() 
