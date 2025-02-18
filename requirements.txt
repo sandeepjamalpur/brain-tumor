@@ -1,8 +1,9 @@
-streamlit
-torch
-torchvision
-pillow
-numpy
-matplotlib
-opencv-python-headless
-google-cloud-storage
+streamlit==1.24.0
+torch==1.13.1+cpu
+torchvision==0.14.1+cpu
+--extra-index-url https://download.pytorch.org/whl/cpu
+pillow==9.3.0
+numpy==1.23.5
+matplotlib==3.7.1
+opencv-python-headless==4.7.0.72
+google-cloud-storage==2.8.0
