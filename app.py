@@ -21,14 +21,14 @@ def check_password():
     def password_entered():
         if hmac.compare_digest(st.session_state["password"], st.secrets["password"]):
         # Default password for testing (in production, use st.secrets)
-        default_password = "admin123"
-        if hmac.compare_digest(st.session_state["password"], default_password):
-            st.session_state["password_correct"] = True
+         default_password = "admin123"
+         if hmac.compare_digest(st.session_state["password"], default_password):
+             st.session_state["password_correct"] = True
         else:
             st.session_state["password_correct"] = False
 
     if "password_correct" not in st.session_state:
-        st.write("Please enter the password to access the application. (Default: admin123)")
+         st.write("Please enter the password to access the application. (Default: admin123)")
         st.text_input(
             "Password", type="password", on_change=password_entered, key="password"
         )
