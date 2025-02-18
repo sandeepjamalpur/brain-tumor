@@ -5,10 +5,15 @@ import cv2
 from PIL import Image
 import matplotlib.pyplot as plt
 from model import UNet
-from utils import preprocess_image, postprocess_mask, load_model
+try:
+    from utils import preprocess_image, postprocess_mask, load_model
+    from config import APP_NAME, APP_ICON, DEFAULT_PASSWORD, SAMPLE_IMAGE_PATH
+except ImportError as e:
+    st.error(f"Error importing required modules: {str(e)}")
+    st.info("Please make sure all required files are in the correct location.")
+    raise
 import os
 import hmac
-from config import APP_NAME, APP_ICON, DEFAULT_PASSWORD, SAMPLE_IMAGE_PATH
 
 # Page config
 st.set_page_config(
