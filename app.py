@@ -5,27 +5,24 @@ import cv2
 from PIL import Image
 import matplotlib.pyplot as plt
 from model import UNet
-from utils import preprocess_image, postprocess_mask
+from utils import preprocess_image, postprocess_mask, load_model
 import os
-from google.cloud import storage  # if using GCP
 import hmac
+from config import APP_NAME, APP_ICON, DEFAULT_PASSWORD, SAMPLE_IMAGE_PATH
 
 # Page config
 st.set_page_config(
-    page_title="Medical Image Tumor Segmentation",
-    page_icon="🏥",
+    page_title=APP_NAME,
+    page_icon=APP_ICON,
     layout="wide"
 )
 
 def check_password():
     def password_entered():
-        if hmac.compare_digest(st.session_state["password"], st.secrets["password"]):
-            # Default password for testing (in production, use st.secrets)
-            default_password = "admin123"
-            if hmac.compare_digest(st.session_state["password"], default_password):
-                st.session_state["password_correct"] = True
-            else:
-                st.session_state["password_correct"] = False
+        if hmac.compare_digest(st.session_state["password"], DEFAULT_PASSWORD):
+            st.session_state["password_correct"] = True
+        else:
+            st.session_state["password_correct"] = False
 
     if "password_correct" not in st.session_state:
         st.write("Please enter the password to access the application. (Default: admin123)")
@@ -53,29 +50,31 @@ def main():
         show_about()
 
 def show_home():
-    st.title("Medical Image Tumor Segmentation")
+    st.title(APP_NAME)
     
     # Add a sample image section
     st.sidebar.markdown("---")
     st.sidebar.subheader("Sample Images")
     if st.sidebar.button("Load Sample Image"):
-        # Load and display a sample image
-        sample_image_path = "sample_data/sample_brain_mri.jpg"
         try:
-            image = Image.open(sample_image_path)
+            image = Image.open(SAMPLE_IMAGE_PATH)
             st.image(image, caption="Sample Brain MRI", use_column_width=True)
         except Exception as e:
             st.error(f"Could not load sample image: {str(e)}")
             st.info("Please ensure you have sample images in the sample_data directory")
     
-    st.write("""Welcome to the Medical Image Tumor Segmentation tool. This application helps medical
-    professionals identify and segment tumors in medical images using deep learning.""")
+    st.write("""
+    Welcome to the Medical Image Tumor Segmentation tool. This application helps medical
+    professionals identify and segment tumors in medical images using deep learning.
+    """)
     
     st.subheader("Key Features")
-    st.write("""- Upload medical images (MRI, CT scans)
+    st.write("""
+    - Upload medical images (MRI, CT scans)
     - Automatic tumor segmentation
     - Visualization of results
-    - Download segmentation masks""")
+    - Download segmentation masks
+    """)
 
 def show_segmentation():
     st.title("Tumor Segmentation")
@@ -86,7 +85,7 @@ def show_segmentation():
     # File uploader
     if use_sample:
         try:
-            image = Image.open("sample_data/sample_brain_mri.jpg")
+            image = Image.open(SAMPLE_IMAGE_PATH)
         except Exception as e:
             st.error("Could not load sample image")
             return
@@ -118,7 +117,6 @@ def show_segmentation():
                 
                 # Inference
                 with torch.no_grad():
-                    model.eval()
                     prediction = model(processed_image)
                     mask = postprocess_mask(prediction)
                 
@@ -143,7 +141,8 @@ def show_segmentation():
 
 def show_about():
     st.title("About")
-    st.write("""This application uses deep learning to perform medical image segmentation for tumor detection.
+    st.write("""
+    This application uses deep learning to perform medical image segmentation for tumor detection.
     It implements a U-Net architecture trained on medical imaging datasets.
     
     ### How it works:
@@ -156,22 +155,8 @@ def show_about():
     - Streamlit
     - PyTorch
     - OpenCV
-    - Python""")
-
-def load_model():
-    model = UNet(in_channels=1, out_channels=1)
-    
-    # Option 1: Load from environment variable path
-    weights_path = os.getenv('MODEL_WEIGHTS_PATH', 'model_weights.pth')
-    
-    try:
-        model.load_state_dict(torch.load(weights_path, map_location=torch.device('cpu')))
-    except Exception as e:
-        st.error(f"Failed to load model weights from {weights_path}: {str(e)}")
-        st.info("Please ensure you have model weights file available or configure the correct path.")
-        return None
-        
-    return model
+    - Python
+    """)
 
 if __name__ == "__main__":
     main()
