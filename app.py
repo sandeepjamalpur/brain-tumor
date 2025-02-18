@@ -20,15 +20,15 @@ st.set_page_config(
 def check_password():
     def password_entered():
         if hmac.compare_digest(st.session_state["password"], st.secrets["password"]):
-        # Default password for testing (in production, use st.secrets)
-         default_password = "admin123"
-         if hmac.compare_digest(st.session_state["password"], default_password):
-             st.session_state["password_correct"] = True
-        else:
-            st.session_state["password_correct"] = False
+            # Default password for testing (in production, use st.secrets)
+            default_password = "admin123"
+            if hmac.compare_digest(st.session_state["password"], default_password):
+                st.session_state["password_correct"] = True
+            else:
+                st.session_state["password_correct"] = False
 
     if "password_correct" not in st.session_state:
-         st.write("Please enter the password to access the application. (Default: admin123)")
+        st.write("Please enter the password to access the application. (Default: admin123)")
         st.text_input(
             "Password", type="password", on_change=password_entered, key="password"
         )
@@ -68,18 +68,14 @@ def show_home():
             st.error(f"Could not load sample image: {str(e)}")
             st.info("Please ensure you have sample images in the sample_data directory")
     
-    st.write("""
-    Welcome to the Medical Image Tumor Segmentation tool. This application helps medical
-    professionals identify and segment tumors in medical images using deep learning.
-    """)
+    st.write("""Welcome to the Medical Image Tumor Segmentation tool. This application helps medical
+    professionals identify and segment tumors in medical images using deep learning.""")
     
     st.subheader("Key Features")
-    st.write("""
-    - Upload medical images (MRI, CT scans)
+    st.write("""- Upload medical images (MRI, CT scans)
     - Automatic tumor segmentation
     - Visualization of results
-    - Download segmentation masks
-    """)
+    - Download segmentation masks""")
 
 def show_segmentation():
     st.title("Tumor Segmentation")
@@ -147,8 +143,7 @@ def show_segmentation():
 
 def show_about():
     st.title("About")
-    st.write("""
-    This application uses deep learning to perform medical image segmentation for tumor detection.
+    st.write("""This application uses deep learning to perform medical image segmentation for tumor detection.
     It implements a U-Net architecture trained on medical imaging datasets.
     
     ### How it works:
@@ -161,8 +156,7 @@ def show_about():
     - Streamlit
     - PyTorch
     - OpenCV
-    - Python
-    """)
+    - Python""")
 
 def load_model():
     model = UNet(in_channels=1, out_channels=1)
