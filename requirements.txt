@@ -4,4 +4,5 @@ torchvision
 pillow
 numpy
 matplotlib
-opencv-python-headless 
+opencv-python-headless
++ google-cloud-storage
